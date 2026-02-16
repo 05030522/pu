@@ -5,7 +5,7 @@
 // TODO: 아래 값들을 실제 값으로 변경하세요
 const CONFIG = {
     // Google Apps Script Web App URL (배포 후 받은 URL)
-    GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxr7QTKbe5dIP7YeeykRNtaOaee7_YAbOU5v1hIX1PIctI6voHf0aocUBUmuVCf23cj/exec',
+    GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwm4bCL9CMM-x0mdRdwMGR-bfsdQZJTlgiBSxAEgVDX2d9Xj1dqfmY01vqdPE4Daft0/exec',
     
     // 시작 날짜 (만난 날)
     START_DATE: '2025-09-26', // YYYY-MM-DD 형식으로 변경하세요

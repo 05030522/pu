@@ -31,12 +31,53 @@
             color: var(--text-primary);
             min-height: 100vh;
             line-height: 1.6;
+            position: relative;
+        }
+        
+        /* 폼폼푸린 & 모카 데코레이션 */
+        body::before {
+            content: '';
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 120px;
+            height: 120px;
+            background-image: url('https://i.pinimg.com/originals/d8/36/5e/d8365ea45b5c06be8eb63d0a2a6e10de.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.5;
+            z-index: 0;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        body::after {
+            content: '';
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 100px;
+            height: 100px;
+            background-image: url('https://i.pinimg.com/originals/cc/c9/35/ccc935e0ca3b85afc3d3af3f4304c4a2.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.5;
+            z-index: 0;
+            animation: float 3s ease-in-out infinite 1.5s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 2rem;
+            position: relative;
+            z-index: 1;
         }
 
         header {
@@ -185,6 +226,38 @@
         .content-section.active {
             display: block;
         }
+        
+        /* 필터 버튼 */
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .filter-btn {
+            padding: 0.8rem 2rem;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            color: var(--text-primary);
+            font-family: 'Nanum Myeongjo', serif;
+        }
+        
+        .filter-btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+        }
+        
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-lavender));
+            color: white;
+            border-color: transparent;
+        }
 
         /* 편지 섹션 */
         .letters-grid {
@@ -226,6 +299,18 @@
             font-size: 0.95rem;
             line-height: 1.8;
             color: var(--text-primary);
+            max-height: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .letter-content.truncated::after {
+            content: '...';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.8) 20%);
+            padding-left: 20px;
         }
 
         /* 새 편지 버튼 */
@@ -290,6 +375,29 @@
             margin-bottom: 2rem;
             text-align: center;
         }
+        
+        .letter-detail-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .letter-detail-content {
+            font-size: 1.05rem;
+            line-height: 2;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
 
         .form-group {
             margin-bottom: 1.5rem;
@@ -313,6 +421,39 @@
             font-size: 0.95rem;
             color: var(--text-primary);
             transition: all 0.3s ease;
+        }
+        
+        input[type="file"] {
+            padding: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .image-preview {
+            margin-top: 1rem;
+            text-align: center;
+        }
+        
+        .image-preview img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+        
+        .image-preview .remove-image {
+            display: inline-block;
+            margin-top: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 0, 0, 0.1);
+            color: #d32f2f;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+        
+        .image-preview .remove-image:hover {
+            background: rgba(255, 0, 0, 0.2);
         }
 
         input:focus, textarea:focus, select:focus {
@@ -349,9 +490,21 @@
             color: white;
         }
 
-        .btn-primary:hover {
+        .btn-primary:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(232, 196, 196, 0.4);
+            box-shadow: 0 8px 24px rgba(232, 196, 196, 0.6);
+            filter: brightness(1.1);
+        }
+        
+        .btn-primary:active:not(:disabled) {
+            transform: translateY(0);
+            box-shadow: 0 4px 12px rgba(232, 196, 196, 0.4);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: #ccc;
         }
 
         .btn-secondary {
@@ -575,6 +728,11 @@
 
         <!-- 편지함 섹션 -->
         <div id="letters-section" class="content-section active">
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filterLetters('all')">전체</button>
+                <button class="filter-btn" onclick="filterLetters('윤서')">윤서에게 💌</button>
+                <button class="filter-btn" onclick="filterLetters('진혁')">진혁에게 💌</button>
+            </div>
             <div class="letters-grid" id="letters-container">
                 <div class="loading">편지를 불러오는 중...</div>
             </div>
@@ -616,6 +774,11 @@
                     <label for="letter-content">편지 내용</label>
                     <textarea id="letter-content" placeholder="마음을 담아 써보세요..." required></textarea>
                 </div>
+                <div class="form-group">
+                    <label for="letter-image">사진 첨부 (선택)</label>
+                    <input type="file" id="letter-image" accept="image/*" onchange="previewImage(this, 'letter-image-preview')">
+                    <div id="letter-image-preview" class="image-preview"></div>
+                </div>
                 <div class="btn-group">
                     <button type="button" class="btn-secondary" onclick="closeModal()">취소</button>
                     <button type="submit" class="btn-primary">보내기</button>
@@ -641,11 +804,31 @@
                     <label for="memory-content">내용</label>
                     <textarea id="memory-content" placeholder="그날의 이야기를 적어보세요..." required></textarea>
                 </div>
+                <div class="form-group">
+                    <label for="memory-image">사진 첨부 (선택)</label>
+                    <input type="file" id="memory-image" accept="image/*" onchange="previewImage(this, 'memory-image-preview')">
+                    <div id="memory-image-preview" class="image-preview"></div>
+                </div>
                 <div class="btn-group">
                     <button type="button" class="btn-secondary" onclick="closeModal()">취소</button>
                     <button type="submit" class="btn-primary">저장</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- 편지 상세보기 모달 -->
+    <div id="letter-detail-modal" class="modal">
+        <div class="modal-content">
+            <h2 class="modal-title" id="letter-detail-title">편지</h2>
+            <div class="letter-detail-info">
+                <span id="letter-detail-from"></span>
+                <span id="letter-detail-date"></span>
+            </div>
+            <div class="letter-detail-content" id="letter-detail-text"></div>
+            <div class="btn-group">
+                <button type="button" class="btn-primary" onclick="closeModal()" style="width: 100%;">닫기</button>
+            </div>
         </div>
     </div>
 

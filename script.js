@@ -14,6 +14,10 @@ const CONFIG = {
     NEXT_MEET_DATE: '2026-02-28', // YYYY-MM-DD 형식으로 변경하세요
 };
 
+// 전역 변수
+let allLetters = [];
+let currentFilter = 'all';
+
 // ========================================
 // 시간대 시계
 // ========================================
@@ -144,25 +148,78 @@ async function loadLetters() {
         const response = await fetch(`${CONFIG.GOOGLE_SCRIPT_URL}?action=getLetters`);
         const letters = await response.json();
         
-        const container = document.getElementById('letters-container');
-        
-        if (letters.length === 0) {
-            container.innerHTML = '<div class="loading">아직 편지가 없습니다. 첫 편지를 써보세요! 💌</div>';
-            return;
-        }
-        
-        container.innerHTML = letters.map(letter => `
-            <div class="letter-card" style="animation-delay: ${Math.random() * 0.3}s">
-                <div class="letter-from">From: ${letter.from}</div>
-                <div class="letter-date">${formatDate(letter.date)}</div>
-                <div class="letter-content">${letter.content}</div>
-            </div>
-        `).join('');
+        allLetters = letters;
+        displayLetters();
     } catch (error) {
         console.error('편지 불러오기 실패:', error);
         document.getElementById('letters-container').innerHTML = 
             '<div class="loading">편지를 불러올 수 없습니다. 구글 시트 설정을 확인해주세요.</div>';
     }
+}
+
+// 편지 필터링 및 표시
+function displayLetters() {
+    const container = document.getElementById('letters-container');
+    
+    let filteredLetters = allLetters;
+    if (currentFilter !== 'all') {
+        filteredLetters = allLetters.filter(letter => letter.to === currentFilter);
+    }
+    
+    if (filteredLetters.length === 0) {
+        container.innerHTML = '<div class="loading">아직 편지가 없습니다. 첫 편지를 써보세요! 💌</div>';
+        return;
+    }
+    
+    container.innerHTML = filteredLetters.map((letter, index) => {
+        const contentPreview = letter.content.length > 100 
+            ? letter.content.substring(0, 100) + '...' 
+            : letter.content;
+        
+        return `
+            <div class="letter-card" style="animation-delay: ${index * 0.05}s" onclick="showLetterDetail(${index}, '${currentFilter}')">
+                <div class="letter-from">From: ${letter.from} → To: ${letter.to}</div>
+                <div class="letter-date">${formatDate(letter.date)}</div>
+                <div class="letter-content ${letter.content.length > 100 ? 'truncated' : ''}">${contentPreview}</div>
+                ${letter.image ? `<div style="margin-top: 1rem;"><img src="${letter.image}" style="max-width: 100%; border-radius: 8px;"></div>` : ''}
+            </div>
+        `;
+    }).join('');
+}
+
+// 편지 필터 함수
+function filterLetters(filter) {
+    currentFilter = filter;
+    
+    // 버튼 활성화 상태 변경
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    displayLetters();
+}
+
+// 편지 상세보기
+function showLetterDetail(index, filter) {
+    let filteredLetters = allLetters;
+    if (filter !== 'all') {
+        filteredLetters = allLetters.filter(letter => letter.to === filter);
+    }
+    
+    const letter = filteredLetters[index];
+    
+    document.getElementById('letter-detail-title').textContent = `${letter.from}의 편지`;
+    document.getElementById('letter-detail-from').textContent = `From: ${letter.from} → To: ${letter.to}`;
+    document.getElementById('letter-detail-date').textContent = formatDate(letter.date);
+    
+    let contentHTML = letter.content;
+    if (letter.image) {
+        contentHTML += `<br><br><img src="${letter.image}" style="max-width: 100%; border-radius: 10px; margin-top: 1rem;">`;
+    }
+    
+    document.getElementById('letter-detail-text').innerHTML = contentHTML;
+    document.getElementById('letter-detail-modal').classList.add('active');
 }
 
 // 편지 저장하기
@@ -215,6 +272,7 @@ async function loadMemories() {
                     <div class="timeline-date">${formatDate(memory.date)}</div>
                     <div class="timeline-title">${memory.title}</div>
                     <div class="timeline-text">${memory.content}</div>
+                    ${memory.image ? `<img src="${memory.image}" style="max-width: 100%; border-radius: 10px; margin-top: 1rem;">` : ''}
                 </div>
             </div>
         `).join('');
@@ -255,29 +313,107 @@ async function saveMemory(memoryData) {
 // 폼 제출 처리
 // ========================================
 
-document.getElementById('letter-form').addEventListener('submit', (e) => {
+// 이미지 미리보기
+function previewImage(input, previewId) {
+    const preview = document.getElementById(previewId);
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            preview.innerHTML = `
+                <img src="${e.target.result}">
+                <div class="remove-image" onclick="removeImage('${input.id}', '${previewId}')">이미지 제거</div>
+            `;
+        };
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// 이미지 제거
+function removeImage(inputId, previewId) {
+    document.getElementById(inputId).value = '';
+    document.getElementById(previewId).innerHTML = '';
+}
+
+// Base64로 이미지 변환
+async function getBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+}
+
+document.getElementById('letter-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    const letterData = {
-        from: document.getElementById('letter-from').value,
-        to: document.getElementById('letter-to').value,
-        content: document.getElementById('letter-content').value,
-        date: new Date().toISOString()
-    };
+    // 버튼 비활성화 (중복 제출 방지)
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = '전송 중...';
     
-    saveLetter(letterData);
+    try {
+        const imageFile = document.getElementById('letter-image').files[0];
+        let imageData = null;
+        
+        if (imageFile) {
+            imageData = await getBase64(imageFile);
+        }
+        
+        const letterData = {
+            from: document.getElementById('letter-from').value,
+            to: document.getElementById('letter-to').value,
+            content: document.getElementById('letter-content').value,
+            image: imageData,
+            date: new Date().toISOString()
+        };
+        
+        await saveLetter(letterData);
+    } catch (error) {
+        console.error('편지 전송 실패:', error);
+        alert('편지 전송에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+        // 버튼 다시 활성화
+        submitBtn.disabled = false;
+        submitBtn.textContent = '보내기';
+    }
 });
 
-document.getElementById('memory-form').addEventListener('submit', (e) => {
+document.getElementById('memory-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    const memoryData = {
-        date: document.getElementById('memory-date').value,
-        title: document.getElementById('memory-title').value,
-        content: document.getElementById('memory-content').value
-    };
+    // 버튼 비활성화 (중복 제출 방지)
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = '저장 중...';
     
-    saveMemory(memoryData);
+    try {
+        const imageFile = document.getElementById('memory-image').files[0];
+        let imageData = null;
+        
+        if (imageFile) {
+            imageData = await getBase64(imageFile);
+        }
+        
+        const memoryData = {
+            date: document.getElementById('memory-date').value,
+            title: document.getElementById('memory-title').value,
+            content: document.getElementById('memory-content').value,
+            image: imageData
+        };
+        
+        await saveMemory(memoryData);
+    } catch (error) {
+        console.error('추억 저장 실패:', error);
+        alert('추억 저장에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+        // 버튼 다시 활성화
+        submitBtn.disabled = false;
+        submitBtn.textContent = '저장';
+    }
 });
 
 // ========================================

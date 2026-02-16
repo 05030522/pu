@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Space 💕</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600&family=Nanum+Myeongjo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #faf8f6;
+            --secondary-bg: #f5f0eb;
+            --accent-pink: #e8c4c4;
+            --accent-lavender: #d4c5e2;
+            --text-primary: #4a4a4a;
+            --text-secondary: #7a7a7a;
+            --border-color: #e8dfd7;
+            --shadow: rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nanum Myeongjo', serif;
+            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            padding: 3rem 0 2rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 3rem;
+            font-weight: 300;
+            color: var(--text-primary);
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+        }
+
+        /* 타임존 섹션 */
+        .timezone-section {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 3rem;
+            margin: 4rem 0;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 30px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px var(--shadow);
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .timezone {
+            text-align: center;
+        }
+
+        .city-name {
+            font-size: 1.1rem;
+            letter-spacing: 0.2em;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .time {
+            font-family: 'Crimson Pro', serif;
+            font-size: 3.5rem;
+            font-weight: 300;
+            color: var(--text-primary);
+            margin: 1rem 0;
+        }
+
+        .date {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .timezone-divider {
+            width: 1px;
+            background: linear-gradient(to bottom, transparent, var(--border-color), transparent);
+            align-self: stretch;
+        }
+
+        /* D-Day 카운터 */
+        .counter-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .counter-card {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            box-shadow: 0 4px 16px var(--shadow);
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .counter-label {
+            font-size: 0.9rem;
+            letter-spacing: 0.2em;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .counter-value {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-lavender));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* 네비게이션 탭 */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 3rem 0 2rem;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .nav-tab {
+            padding: 1rem 2.5rem;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            letter-spacing: 0.1em;
+            color: var(--text-primary);
+        }
+
+        .nav-tab:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-lavender));
+            color: white;
+            border-color: transparent;
+        }
+
+        /* 컨텐츠 섹션 */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* 편지 섹션 */
+        .letters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .letter-card {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px var(--shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .letter-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px var(--shadow);
+        }
+
+        .letter-from {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .letter-date {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .letter-content {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        /* 새 편지 버튼 */
+        .write-letter-btn {
+            position: fixed;
+            bottom: 3rem;
+            right: 3rem;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-lavender));
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(232, 196, 196, 0.4);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .write-letter-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 12px 32px rgba(232, 196, 196, 0.6);
+        }
+
+        /* 모달 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--primary-bg);
+            padding: 3rem;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: scaleIn 0.3s ease-out;
+        }
+
+        .modal-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            font-family: 'Nanum Myeongjo', serif;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-lavender);
+            box-shadow: 0 0 0 3px rgba(212, 197, 226, 0.2);
+        }
+
+        textarea {
+            min-height: 200px;
+            resize: vertical;
+            line-height: 1.8;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        button {
+            flex: 1;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Nanum Myeongjo', serif;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-lavender));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(232, 196, 196, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 1);
+        }
+
+        /* 추억 타임라인 */
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--accent-pink), var(--accent-lavender));
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 3rem;
+            position: relative;
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .timeline-item:nth-child(odd) {
+            flex-direction: row;
+        }
+
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-content {
+            flex: 1;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px var(--shadow);
+            margin: 0 2rem;
+            max-width: 45%;
+        }
+
+        .timeline-date {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.3rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+        }
+
+        .timeline-text {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(135deg, var(--accent-pink), var(--accent-lavender));
+            border: 3px solid var(--primary-bg);
+            border-radius: 50%;
+            transform: translate(-50%, 1.5rem);
+            z-index: 1;
+        }
+
+        /* 로딩 상태 */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        /* 애니메이션 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            
+            .timezone-section {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .timezone-divider {
+                height: 1px;
+                width: 100%;
+                background: linear-gradient(to right, transparent, var(--border-color), transparent);
+            }
+            
+            .counter-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .timeline::before {
+                left: 20px;
+            }
+            
+            .timeline-item {
+                flex-direction: column !important;
+            }
+            
+            .timeline-content {
+                max-width: 100%;
+                margin-left: 60px;
+                margin-right: 0;
+            }
+            
+            .timeline-dot {
+                left: 20px;
+            }
+            
+            .write-letter-btn {
+                bottom: 2rem;
+                right: 2rem;
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Our Space</h1>
+            <p class="subtitle">Seoul ✦ London</p>
+        </header>
+
+        <!-- 타임존 섹션 -->
+        <div class="timezone-section">
+            <div class="timezone">
+                <div class="city-name">Seoul</div>
+                <div class="time" id="seoul-time">--:--:--</div>
+                <div class="date" id="seoul-date">---- -- --</div>
+            </div>
+            <div class="timezone-divider"></div>
+            <div class="timezone">
+                <div class="city-name">London</div>
+                <div class="time" id="london-time">--:--:--</div>
+                <div class="date" id="london-date">---- -- --</div>
+            </div>
+        </div>
+
+        <!-- D-Day 카운터 -->
+        <div class="counter-section">
+            <div class="counter-card">
+                <div class="counter-label">함께한 시간</div>
+                <div class="counter-value" id="together-days">0일</div>
+            </div>
+            <div class="counter-card">
+                <div class="counter-label">다음 만남까지</div>
+                <div class="counter-value" id="next-meet">D-Day</div>
+            </div>
+        </div>
+
+        <!-- 네비게이션 -->
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="showSection('letters')">편지함</div>
+            <div class="nav-tab" onclick="showSection('memories')">추억</div>
+        </div>
+
+        <!-- 편지함 섹션 -->
+        <div id="letters-section" class="content-section active">
+            <div class="letters-grid" id="letters-container">
+                <div class="loading">편지를 불러오는 중...</div>
+            </div>
+        </div>
+
+        <!-- 추억 섹션 -->
+        <div id="memories-section" class="content-section">
+            <div class="timeline" id="timeline-container">
+                <div class="loading">추억을 불러오는 중...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 새 편지 쓰기 버튼 -->
+    <button class="write-letter-btn" onclick="openModal('letter')" title="편지 쓰기">✎</button>
+
+    <!-- 편지 작성 모달 -->
+    <div id="letter-modal" class="modal">
+        <div class="modal-content">
+            <h2 class="modal-title">새 편지 쓰기</h2>
+            <form id="letter-form">
+                <div class="form-group">
+                    <label for="letter-from">보내는 사람</label>
+                    <select id="letter-from" required>
+                        <option value="">선택하세요</option>
+                        <option value="진혁">진혁</option>
+                        <option value="윤서">윤서</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="letter-to">받는 사람</label>
+                    <select id="letter-to" required>
+                        <option value="">선택하세요</option>
+                        <option value="윤서">윤서</option>
+                        <option value="진혁">진혁</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="letter-content">편지 내용</label>
+                    <textarea id="letter-content" placeholder="마음을 담아 써보세요..." required></textarea>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn-secondary" onclick="closeModal()">취소</button>
+                    <button type="submit" class="btn-primary">보내기</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 추억 추가 모달 -->
+    <div id="memory-modal" class="modal">
+        <div class="modal-content">
+            <h2 class="modal-title">새 추억 추가</h2>
+            <form id="memory-form">
+                <div class="form-group">
+                    <label for="memory-date">날짜</label>
+                    <input type="date" id="memory-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="memory-title">제목</label>
+                    <input type="text" id="memory-title" placeholder="예: 첫 만남" required>
+                </div>
+                <div class="form-group">
+                    <label for="memory-content">내용</label>
+                    <textarea id="memory-content" placeholder="그날의 이야기를 적어보세요..." required></textarea>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn-secondary" onclick="closeModal()">취소</button>
+                    <button type="submit" class="btn-primary">저장</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

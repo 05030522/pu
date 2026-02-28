@@ -9,14 +9,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600&family=Nanum+Myeongjo:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-bg: #faf8f6;
-            --secondary-bg: #f5f0eb;
-            --accent-pink: #e8c4c4;
-            --accent-lavender: #d4c5e2;
-            --text-primary: #4a4a4a;
-            --text-secondary: #7a7a7a;
-            --border-color: #e8dfd7;
-            --shadow: rgba(0, 0, 0, 0.08);
+            /* 🎨 색상 테마 - 원하는 색상으로 변경 가능! */
+            --primary-bg: #faf8f6;      /* 메인 배경색 */
+            --secondary-bg: #f5f0eb;    /* 보조 배경색 */
+            --accent-pink: #e8c4c4;     /* 강조 핑크 (버튼, 그라데이션) */
+            --accent-lavender: #d4c5e2; /* 강조 라벤더 (버튼, 그라데이션) */
+            --text-primary: #4a4a4a;    /* 본문 글자색 */
+            --text-secondary: #7a7a7a;  /* 보조 글자색 */
+            --border-color: #e8dfd7;    /* 테두리 색 */
+            --shadow: rgba(0, 0, 0, 0.08); /* 그림자 */
+            
+            /* 🖼️ 데코레이션 이미지 URL - 원하는 이미지로 변경! */
+            --pompompurin-image: url('https://i.pinimg.com/originals/d8/36/5e/d8365ea45b5c06be8eb63d0a2a6e10de.png');
+            --mocha-image: url('https://i.pinimg.com/originals/cc/c9/35/ccc935e0ca3b85afc3d3af3f4304c4a2.png');
+            
+            /* 📏 이미지 크기 조절 */
+            --pompompurin-size: 200px;  /* 왼쪽(서울) - 폼폼푸린 확대 */
+            --mocha-size: 180px;        /* 오른쪽(런던) - 모카 */
+            
+            /* 🌫️ 이미지 투명도 (0.0 ~ 1.0) */
+            --decoration-opacity: 0.5;
         }
 
         * {
@@ -34,37 +46,46 @@
             position: relative;
         }
         
-        /* 폼폼푸린 & 모카 데코레이션 */
+        /* 캐릭터 데코레이션 */
+        /* 💡 이미지 변경: 위의 :root에서 --pompompurin-image와 --mocha-image URL만 바꾸면 됩니다! */
+        
+        /* 왼쪽 (서울) - 폼폼푸린 */
         body::before {
             content: '';
             position: fixed;
-            bottom: 20px;
-            left: 20px;
-            width: 120px;
-            height: 120px;
-            background-image: url('https://i.pinimg.com/originals/d8/36/5e/d8365ea45b5c06be8eb63d0a2a6e10de.png');
+            top: 50%;
+            left: 30px;
+            transform: translateY(-50%);
+            width: var(--pompompurin-size);
+            height: var(--pompompurin-size);
+            background-image: var(--pompompurin-image);
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            opacity: 0.5;
+            opacity: var(--decoration-opacity);
             z-index: 0;
             animation: float 3s ease-in-out infinite;
+            pointer-events: none;
+            border-radius: 50%;
         }
         
+        /* 오른쪽 (런던) - 모카 */
         body::after {
             content: '';
             position: fixed;
-            top: 20px;
-            right: 20px;
-            width: 100px;
-            height: 100px;
-            background-image: url('https://i.pinimg.com/originals/cc/c9/35/ccc935e0ca3b85afc3d3af3f4304c4a2.png');
-            background-size: contain;
+            top: 50%;
+            right: 30px;
+            transform: translateY(-50%);
+            width: var(--mocha-size);
+            height: var(--mocha-size);
+            background-image: var(--mocha-image);
+            background-size: 80%;
             background-repeat: no-repeat;
-            background-position: center;
-            opacity: 0.5;
+            background-position: center 40%;
+            opacity: var(--decoration-opacity);
             z-index: 0;
             animation: float 3s ease-in-out infinite 1.5s;
+            pointer-events: none;
         }
         
         @keyframes float {

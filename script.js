@@ -11,7 +11,7 @@ const CONFIG = {
     START_DATE: '2025-09-26', // YYYY-MM-DD 형식으로 변경하세요
     
     // 다음 만남 날짜
-    NEXT_MEET_DATE: '2026-02-28', // YYYY-MM-DD 형식으로 변경하세요
+    NEXT_MEET_DATE: '2026-03-08', // YYYY-MM-DD 형식으로 변경하세요
 };
 
 // 전역 변수

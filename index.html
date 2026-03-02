@@ -3,1043 +3,746 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Space 💕</title>
+    <title>Our Space</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600&family=Nanum+Myeongjo:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* 🎨 색상 테마 - 원하는 색상으로 변경 가능! */
-            --primary-bg: #faf8f6;      /* 메인 배경색 */
-            --secondary-bg: #f5f0eb;    /* 보조 배경색 */
-            --accent-pink: #e8c4c4;     /* 강조 핑크 (버튼, 그라데이션) */
-            --accent-lavender: #d4c5e2; /* 강조 라벤더 (버튼, 그라데이션) */
-            --text-primary: #4a4a4a;    /* 본문 글자색 */
-            --text-secondary: #7a7a7a;  /* 보조 글자색 */
-            --border-color: #e8dfd7;    /* 테두리 색 */
-            --shadow: rgba(0, 0, 0, 0.08); /* 그림자 */
-            
-            /* 🖼️ 데코레이션 이미지 URL - 원하는 이미지로 변경! */
+            --bg-cream: #fdf8f4;
+            --bg-warm: #f9f1ea;
+            --bg-card: rgba(255, 255, 255, 0.65);
+            --pink-soft: #f2b5b5;
+            --pink-deep: #e8909c;
+            --lavender: #c9b8e8;
+            --lavender-light: #e5ddf5;
+            --peach: #fcd5ce;
+            --text-dark: #3d3235;
+            --text-mid: #6b5b63;
+            --text-light: #9b8e94;
+            --border: rgba(0,0,0,0.06);
+            --glass: rgba(255,255,255,0.55);
+            --glass-border: rgba(255,255,255,0.35);
+            --shadow-soft: 0 4px 24px rgba(60,30,40,0.06);
+            --shadow-hover: 0 12px 40px rgba(60,30,40,0.1);
+            --gradient-main: linear-gradient(135deg, var(--pink-soft), var(--lavender));
+            --gradient-card: linear-gradient(135deg, rgba(242,181,181,0.12), rgba(201,184,232,0.12));
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
+            --radius-pill: 50px;
+
             --pompompurin-image: url('https://raw.githubusercontent.com/05030522/pu/main/pompompurin.png');
             --mocha-image: url('https://raw.githubusercontent.com/05030522/pu/main/mocha.png');
-            
-            /* 📏 이미지 크기 조절 */
-            --pompompurin-size: 200px;  /* 왼쪽(서울) - 폼폼푸린 확대 */
-            --mocha-size: 180px;        /* 오른쪽(런던) - 모카 */
-            
-            /* 🌫️ 이미지 투명도 (0.0 ~ 1.0) */
-            --decoration-opacity: 0.5;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Nanum Myeongjo', serif;
-            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
-            color: var(--text-primary);
+            font-family: 'Noto Sans KR', sans-serif;
+            background: var(--bg-cream);
+            color: var(--text-dark);
             min-height: 100vh;
-            line-height: 1.6;
-            position: relative;
+            line-height: 1.7;
+            overflow-x: hidden;
         }
-        
-        /* 캐릭터 데코레이션 */
-        /* 💡 이미지 변경: 위의 :root에서 --pompompurin-image와 --mocha-image URL만 바꾸면 됩니다! */
-        
-        /* 왼쪽 (서울) - 폼폼푸린 */
+
+        /* Animated background */
         body::before {
             content: '';
             position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(242,181,181,0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(201,184,232,0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 60% 80%, rgba(252,213,206,0.1) 0%, transparent 50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Character decorations */
+        .deco-left, .deco-right {
+            position: fixed;
             top: 50%;
-            left: 30px;
             transform: translateY(-50%);
-            width: var(--pompompurin-size);
-            height: var(--pompompurin-size);
-            background-image: var(--pompompurin-image);
+            width: 160px;
+            height: 160px;
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
-            opacity: var(--decoration-opacity);
+            opacity: 0.35;
             z-index: 0;
-            animation: float 3s ease-in-out infinite;
             pointer-events: none;
-            border-radius: 50%;
+            animation: floatDeco 4s ease-in-out infinite;
         }
-        
-        /* 오른쪽 (런던) - 모카 */
-        body::after {
-            content: '';
-            position: fixed;
-            top: 50%;
-            right: 30px;
-            transform: translateY(-50%);
-            width: var(--mocha-size);
-            height: var(--mocha-size);
+        .deco-left {
+            left: 20px;
+            background-image: var(--pompompurin-image);
+        }
+        .deco-right {
+            right: 20px;
             background-image: var(--mocha-image);
-            background-size: 80%;
-            background-repeat: no-repeat;
-            background-position: center 40%;
-            opacity: var(--decoration-opacity);
-            z-index: 0;
-            animation: float 3s ease-in-out infinite 1.5s;
-            pointer-events: none;
+            animation-delay: 2s;
         }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+        @keyframes floatDeco {
+            0%, 100% { transform: translateY(-50%); }
+            50% { transform: translateY(calc(-50% - 15px)); }
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 780px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1.5rem;
             position: relative;
             z-index: 1;
         }
 
+        /* Header */
         header {
             text-align: center;
-            padding: 3rem 0 2rem;
-            animation: fadeInDown 1s ease-out;
+            padding: 2.5rem 0 1.5rem;
+            animation: fadeDown 0.8s ease-out;
         }
-
         h1 {
-            font-family: 'Crimson Pro', serif;
-            font-size: 3rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.8rem;
             font-weight: 300;
-            color: var(--text-primary);
-            letter-spacing: 0.1em;
-            margin-bottom: 0.5rem;
+            letter-spacing: 0.08em;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-
         .subtitle {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            letter-spacing: 0.4em;
+            margin-top: 0.3rem;
+            font-weight: 300;
         }
 
-        /* 타임존 섹션 */
+        /* Glass Card base */
+        .glass {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+        }
+
+        /* Timezone */
         .timezone-section {
             display: grid;
             grid-template-columns: 1fr auto 1fr;
-            gap: 3rem;
-            margin: 4rem 0;
-            padding: 3rem;
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 30px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 8px 32px var(--shadow);
-            backdrop-filter: blur(10px);
-            animation: fadeInUp 1s ease-out 0.2s both;
+            gap: 2rem;
+            padding: 2rem;
+            margin: 2rem 0;
+            animation: fadeUp 0.8s ease-out 0.1s both;
         }
-
-        .timezone {
-            text-align: center;
-        }
-
+        .timezone { text-align: center; }
         .city-name {
-            font-size: 1.1rem;
-            letter-spacing: 0.2em;
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.25em;
+            color: var(--text-light);
             text-transform: uppercase;
+            font-weight: 500;
         }
-
         .time {
-            font-family: 'Crimson Pro', serif;
-            font-size: 3.5rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.6rem;
             font-weight: 300;
-            color: var(--text-primary);
-            margin: 1rem 0;
+            color: var(--text-dark);
+            margin: 0.5rem 0 0.3rem;
         }
-
-        .date {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
+        .date { font-size: 0.78rem; color: var(--text-light); font-weight: 300; }
         .timezone-divider {
             width: 1px;
-            background: linear-gradient(to bottom, transparent, var(--border-color), transparent);
+            background: linear-gradient(to bottom, transparent, var(--pink-soft), var(--lavender), transparent);
             align-self: stretch;
         }
 
-        /* D-Day 카운터 */
+        /* Counters */
         .counter-section {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin: 3rem 0;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            animation: fadeUp 0.8s ease-out 0.2s both;
         }
-
         .counter-card {
-            background: rgba(255, 255, 255, 0.7);
-            padding: 2.5rem;
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
+            padding: 1.8rem 1rem;
             text-align: center;
-            box-shadow: 0 4px 16px var(--shadow);
-            animation: fadeInUp 1s ease-out 0.4s both;
         }
-
         .counter-label {
-            font-size: 0.9rem;
+            font-size: 0.72rem;
             letter-spacing: 0.2em;
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 0.6rem;
+            font-weight: 500;
         }
-
         .counter-value {
-            font-family: 'Crimson Pro', serif;
-            font-size: 2.5rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
             font-weight: 600;
-            background: linear-gradient(135deg, var(--accent-pink), var(--accent-lavender));
+            background: var(--gradient-main);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
-        /* 네비게이션 탭 */
+        /* Nav tabs */
         .nav-tabs {
             display: flex;
             justify-content: center;
-            gap: 1rem;
-            margin: 3rem 0 2rem;
+            gap: 0.5rem;
+            margin: 2rem 0 1.5rem;
             flex-wrap: wrap;
-            animation: fadeInUp 1s ease-out 0.6s both;
+            animation: fadeUp 0.8s ease-out 0.3s both;
         }
-
         .nav-tab {
-            padding: 1rem 2.5rem;
-            background: rgba(255, 255, 255, 0.5);
-            border: 1px solid var(--border-color);
-            border-radius: 50px;
+            padding: 0.7rem 1.8rem;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-pill);
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
-            letter-spacing: 0.1em;
-            color: var(--text-primary);
-        }
-
-        .nav-tab:hover {
-            background: rgba(255, 255, 255, 0.9);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px var(--shadow);
-        }
-
-        .nav-tab.active {
-            background: linear-gradient(135deg, var(--accent-pink), var(--accent-lavender));
-            color: white;
-            border-color: transparent;
-        }
-
-        /* 컨텐츠 섹션 */
-        .content-section {
-            display: none;
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        .content-section.active {
-            display: block;
-        }
-        
-        /* 필터 버튼 */
-        .filter-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-        
-        .filter-btn {
-            padding: 0.8rem 2rem;
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid var(--border-color);
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: var(--text-mid);
             letter-spacing: 0.05em;
-            color: var(--text-primary);
-            font-family: 'Nanum Myeongjo', serif;
         }
-        
-        .filter-btn:hover {
-            background: rgba(255, 255, 255, 0.9);
+        .nav-tab:hover {
+            background: rgba(255,255,255,0.85);
             transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
         }
-        
+        .nav-tab.active {
+            background: var(--gradient-main);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 20px rgba(242,181,181,0.3);
+            font-weight: 500;
+        }
+
+        /* Content sections */
+        .content-section { display: none; animation: fadeIn 0.4s ease-out; }
+        .content-section.active { display: block; }
+
+        /* Filter buttons */
+        .filter-buttons { display: flex; justify-content: center; gap: 0.5rem; margin: 1.5rem 0; flex-wrap: wrap; }
+        .filter-btn {
+            padding: 0.55rem 1.4rem;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+            color: var(--text-mid);
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+        .filter-btn:hover { background: rgba(255,255,255,0.85); }
         .filter-btn.active {
-            background: linear-gradient(135deg, var(--accent-pink), var(--accent-lavender));
+            background: var(--gradient-main);
             color: white;
             border-color: transparent;
         }
 
-        /* 편지 섹션 */
+        /* Letter cards */
         .letters-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.2rem;
+            margin: 1rem 0;
         }
-
         .letter-card {
-            background: rgba(255, 255, 255, 0.8);
-            padding: 2rem;
-            border-radius: 15px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 12px var(--shadow);
-            transition: all 0.3s ease;
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
-
+        .letter-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px; height: 100%;
+            background: var(--gradient-main);
+            border-radius: 4px 0 0 4px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
         .letter-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 24px var(--shadow);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
         }
-
-        .letter-from {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            letter-spacing: 0.1em;
-            margin-bottom: 0.5rem;
-        }
-
-        .letter-date {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-        }
-
+        .letter-card:hover::before { opacity: 1; }
+        .letter-from { font-size: 0.78rem; color: var(--text-light); margin-bottom: 0.3rem; font-weight: 300; }
+        .letter-date { font-size: 0.72rem; color: var(--text-light); margin-bottom: 0.8rem; }
         .letter-content {
-            font-size: 0.95rem;
+            font-size: 0.88rem;
             line-height: 1.8;
-            color: var(--text-primary);
-            max-height: 100px;
+            color: var(--text-mid);
+            max-height: 80px;
             overflow: hidden;
             position: relative;
         }
-        
         .letter-content.truncated::after {
-            content: '...';
+            content: '';
             position: absolute;
-            bottom: 0;
-            right: 0;
-            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.8) 20%);
-            padding-left: 20px;
+            bottom: 0; left: 0; right: 0;
+            height: 40px;
+            background: linear-gradient(transparent, rgba(255,255,255,0.9));
         }
 
-        /* 새 편지 버튼 */
-        .write-letter-btn {
+        /* FAB */
+        .fab {
             position: fixed;
-            bottom: 3rem;
-            right: 3rem;
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(135deg, var(--accent-pink), var(--accent-lavender));
+            bottom: 2rem;
+            right: 2rem;
+            width: 56px;
+            height: 56px;
+            background: var(--gradient-main);
             border: none;
             border-radius: 50%;
             color: white;
-            font-size: 2rem;
+            font-size: 1.6rem;
             cursor: pointer;
-            box-shadow: 0 8px 24px rgba(232, 196, 196, 0.4);
-            transition: all 0.3s ease;
+            box-shadow: 0 6px 24px rgba(242,181,181,0.35);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
         }
-
-        .write-letter-btn:hover {
-            transform: scale(1.1) rotate(90deg);
-            box-shadow: 0 12px 32px rgba(232, 196, 196, 0.6);
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 32px rgba(242,181,181,0.5);
         }
+        .fab:active { transform: scale(0.95); }
 
-        /* 모달 */
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(5px);
+            inset: 0;
+            background: rgba(61,50,53,0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             z-index: 1000;
-            animation: fadeIn 0.3s ease-out;
         }
-
         .modal.active {
             display: flex;
             justify-content: center;
             align-items: center;
+            animation: fadeIn 0.25s ease-out;
         }
-
         .modal-content {
-            background: var(--primary-bg);
-            padding: 3rem;
-            border-radius: 20px;
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
+            background: var(--bg-cream);
+            padding: 2.5rem;
+            border-radius: var(--radius-lg);
+            max-width: 560px;
+            width: 92%;
+            max-height: 85vh;
             overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            animation: scaleIn 0.3s ease-out;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.15);
+            animation: slideUp 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .modal-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            font-weight: 400;
+            margin-bottom: 1.8rem;
+            text-align: center;
+            color: var(--text-dark);
         }
 
-        .modal-title {
-            font-family: 'Crimson Pro', serif;
-            font-size: 2rem;
-            font-weight: 300;
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-        
         .letter-detail-info {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 0.9rem;
-            color: var(--text-secondary);
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.82rem;
+            color: var(--text-light);
         }
-        
         .letter-detail-content {
-            font-size: 1.05rem;
+            font-size: 0.95rem;
             line-height: 2;
-            color: var(--text-primary);
-            margin-bottom: 2rem;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
             white-space: pre-wrap;
             max-height: 400px;
             overflow-y: auto;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
+            padding: 1.2rem;
+            background: rgba(255,255,255,0.4);
+            border-radius: var(--radius-sm);
         }
 
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
+        /* Forms */
+        .form-group { margin-bottom: 1.3rem; }
         label {
             display: block;
-            font-size: 0.9rem;
-            letter-spacing: 0.1em;
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
+            font-size: 0.78rem;
+            letter-spacing: 0.08em;
+            color: var(--text-light);
+            margin-bottom: 0.4rem;
+            font-weight: 500;
         }
-
         input, textarea, select {
             width: 100%;
-            padding: 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.8);
-            font-family: 'Nanum Myeongjo', serif;
-            font-size: 0.95rem;
-            color: var(--text-primary);
+            padding: 0.85rem 1rem;
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: var(--radius-sm);
+            background: rgba(255,255,255,0.7);
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 0.88rem;
+            color: var(--text-dark);
             transition: all 0.3s ease;
         }
-        
-        input[type="file"] {
-            padding: 0.5rem;
-            cursor: pointer;
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--pink-soft);
+            box-shadow: 0 0 0 3px rgba(242,181,181,0.15);
+            background: white;
         }
-        
-        .image-preview {
-            margin-top: 1rem;
-            text-align: center;
-        }
-        
-        .image-preview img {
-            max-width: 100%;
-            max-height: 300px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px var(--shadow);
-        }
-        
+        textarea { min-height: 160px; resize: vertical; line-height: 1.8; }
+        input[type="file"] { padding: 0.5rem; cursor: pointer; }
+        .image-preview { margin-top: 0.8rem; text-align: center; }
+        .image-preview img { max-width: 100%; max-height: 250px; border-radius: var(--radius-sm); }
         .image-preview .remove-image {
             display: inline-block;
             margin-top: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: rgba(255, 0, 0, 0.1);
-            color: #d32f2f;
-            border-radius: 20px;
+            padding: 0.4rem 1rem;
+            background: rgba(220,80,80,0.08);
+            color: #c44;
+            border-radius: var(--radius-pill);
             cursor: pointer;
-            font-size: 0.85rem;
-            transition: all 0.3s ease;
-        }
-        
-        .image-preview .remove-image:hover {
-            background: rgba(255, 0, 0, 0.2);
+            font-size: 0.78rem;
         }
 
-        input:focus, textarea:focus, select:focus {
-            outline: none;
-            border-color: var(--accent-lavender);
-            box-shadow: 0 0 0 3px rgba(212, 197, 226, 0.2);
-        }
-
-        textarea {
-            min-height: 200px;
-            resize: vertical;
-            line-height: 1.8;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        button {
-            flex: 1;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 50px;
-            font-family: 'Nanum Myeongjo', serif;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
+        .btn-group { display: flex; gap: 0.8rem; margin-top: 1.5rem; }
+        .btn-group button { flex: 1; }
         .btn-primary {
-            background: linear-gradient(135deg, var(--accent-pink), var(--accent-lavender));
+            padding: 0.85rem 1.5rem;
+            background: var(--gradient-main);
             color: white;
+            border: none;
+            border-radius: var(--radius-pill);
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
-
         .btn-primary:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(232, 196, 196, 0.6);
-            filter: brightness(1.1);
+            box-shadow: 0 6px 20px rgba(242,181,181,0.4);
         }
-        
-        .btn-primary:active:not(:disabled) {
-            transform: translateY(0);
-            box-shadow: 0 4px 12px rgba(232, 196, 196, 0.4);
-        }
-        
-        .btn-primary:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            background: #ccc;
-        }
-
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.8);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
+            padding: 0.85rem 1.5rem;
+            background: rgba(255,255,255,0.7);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-pill);
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 0.88rem;
+            color: var(--text-mid);
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
+        .btn-secondary:hover { background: white; }
 
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 1);
-        }
-
-        /* 추억 타임라인 */
-        .timeline {
-            position: relative;
-            padding: 2rem 0;
-        }
-
+        /* Timeline */
+        .timeline { position: relative; padding: 1.5rem 0; }
         .timeline::before {
             content: '';
             position: absolute;
-            left: 50%;
-            top: 0;
-            bottom: 0;
+            left: 20px;
+            top: 0; bottom: 0;
             width: 2px;
-            background: linear-gradient(to bottom, var(--accent-pink), var(--accent-lavender));
-            transform: translateX(-50%);
+            background: var(--gradient-main);
         }
-
         .timeline-item {
             display: flex;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
             position: relative;
-            animation: fadeInUp 0.6s ease-out both;
+            padding-left: 50px;
+            animation: fadeUp 0.5s ease-out both;
         }
-
-        .timeline-item:nth-child(odd) {
-            flex-direction: row;
-        }
-
-        .timeline-item:nth-child(even) {
-            flex-direction: row-reverse;
-        }
-
-        .timeline-content {
-            flex: 1;
-            padding: 2rem;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 15px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 12px var(--shadow);
-            margin: 0 2rem;
-            max-width: 45%;
-        }
-
-        .timeline-date {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            letter-spacing: 0.1em;
-            margin-bottom: 0.5rem;
-        }
-
-        .timeline-title {
-            font-family: 'Crimson Pro', serif;
-            font-size: 1.3rem;
-            font-weight: 400;
-            margin-bottom: 1rem;
-        }
-
-        .timeline-text {
-            font-size: 0.95rem;
-            line-height: 1.8;
-            color: var(--text-primary);
-        }
-
         .timeline-dot {
             position: absolute;
-            left: 50%;
+            left: 13px;
+            top: 0.2rem;
             width: 16px;
             height: 16px;
-            background: linear-gradient(135deg, var(--accent-pink), var(--accent-lavender));
-            border: 3px solid var(--primary-bg);
+            background: var(--gradient-main);
+            border: 3px solid var(--bg-cream);
             border-radius: 50%;
-            transform: translate(-50%, 1.5rem);
             z-index: 1;
         }
-
-        /* 데이트 일정 섹션 */
-        .date-plans-list {
-            display: grid;
-            gap: 2rem;
-            margin: 2rem 0;
+        .timeline-content {
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            flex: 1;
         }
+        .timeline-date { font-size: 0.75rem; color: var(--text-light); margin-bottom: 0.4rem; font-weight: 300; }
+        .timeline-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+        .timeline-text { font-size: 0.88rem; line-height: 1.8; color: var(--text-mid); }
 
+        /* Date plans */
+        .date-plans-list { display: grid; gap: 1.2rem; margin: 1rem 0; }
         .date-plan-card {
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 16px var(--shadow);
+            border-radius: var(--radius-lg);
             overflow: hidden;
-            transition: all 0.3s ease;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
         .date-plan-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 24px var(--shadow);
+            box-shadow: var(--shadow-hover);
         }
-
         .date-plan-header {
-            padding: 1.5rem 2rem;
-            background: linear-gradient(135deg, rgba(232, 196, 196, 0.2), rgba(212, 197, 226, 0.2));
+            padding: 1.2rem 1.5rem;
+            background: var(--gradient-card);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border-color);
+            gap: 0.8rem;
+            border-bottom: 1px solid var(--border);
         }
-
         .date-plan-title {
-            font-family: 'Crimson Pro', serif;
-            font-size: 1.4rem;
-            font-weight: 400;
-            color: var(--text-primary);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--text-dark);
         }
-
+        .date-plan-meta { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
         .date-plan-date {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            background: rgba(255, 255, 255, 0.6);
-            padding: 0.4rem 1rem;
-            border-radius: 20px;
+            font-size: 0.78rem;
+            color: var(--text-light);
+            background: rgba(255,255,255,0.6);
+            padding: 0.3rem 0.8rem;
+            border-radius: var(--radius-pill);
+            font-weight: 300;
         }
-
         .date-plan-dday {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 600;
-            margin-left: 0.5rem;
-            background: linear-gradient(135deg, var(--accent-pink), var(--accent-lavender));
+            background: var(--gradient-main);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-
-        .course-list {
-            padding: 1.5rem 2rem;
-            position: relative;
-        }
-
+        .course-list { padding: 1.2rem 1.5rem; position: relative; }
         .course-list::before {
             content: '';
             position: absolute;
-            left: 3.2rem;
-            top: 1.5rem;
-            bottom: 1.5rem;
+            left: 2.8rem;
+            top: 1.2rem;
+            bottom: 1.2rem;
             width: 2px;
-            background: linear-gradient(to bottom, var(--accent-pink), var(--accent-lavender));
+            background: linear-gradient(to bottom, var(--pink-soft), var(--lavender));
+            opacity: 0.4;
         }
-
-        .course-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 1rem;
-            padding: 0.8rem 0;
-            position: relative;
-        }
-
+        .course-item { display: flex; align-items: flex-start; gap: 0.8rem; padding: 0.6rem 0; position: relative; }
         .course-time {
-            min-width: 50px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-secondary);
+            min-width: 42px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--text-light);
             text-align: right;
             padding-top: 2px;
         }
-
         .course-dot {
-            width: 12px;
-            height: 12px;
-            min-width: 12px;
-            background: linear-gradient(135deg, var(--accent-pink), var(--accent-lavender));
-            border: 2px solid var(--primary-bg);
+            width: 10px; height: 10px; min-width: 10px;
+            background: var(--gradient-main);
+            border: 2px solid var(--bg-cream);
             border-radius: 50%;
-            margin-top: 4px;
+            margin-top: 5px;
             z-index: 1;
         }
-
-        .course-detail {
-            flex: 1;
-        }
-
-        .course-place {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 0.2rem;
-        }
-
-        .course-desc {
-            font-size: 0.88rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
+        .course-place { font-size: 0.9rem; font-weight: 500; color: var(--text-dark); }
+        .course-desc { font-size: 0.8rem; color: var(--text-light); margin-top: 0.15rem; }
         .course-memo {
-            margin-top: 1rem;
-            padding: 1rem 1.5rem;
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 10px;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
+            margin: 0.5rem 1.5rem 1rem;
+            padding: 0.8rem 1.2rem;
+            background: rgba(255,255,255,0.4);
+            border-radius: var(--radius-sm);
+            font-size: 0.82rem;
+            color: var(--text-light);
             line-height: 1.6;
-            border-left: 3px solid var(--accent-lavender);
+            border-left: 3px solid var(--lavender);
         }
-
         .date-plan-actions {
-            padding: 0 2rem 1.5rem;
+            padding: 0 1.5rem 1.2rem;
             display: flex;
             justify-content: flex-end;
             gap: 0.5rem;
         }
-
         .btn-small {
-            padding: 0.5rem 1.2rem;
-            font-size: 0.8rem;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
+            padding: 0.4rem 1rem;
+            font-size: 0.75rem;
+            border-radius: var(--radius-pill);
+            background: rgba(255,255,255,0.5);
+            border: 1px solid var(--border);
+            color: var(--text-light);
             cursor: pointer;
             transition: all 0.3s ease;
-            flex: none;
+            font-family: 'Noto Sans KR', sans-serif;
         }
+        .btn-small:hover { background: white; color: var(--text-mid); }
+        .btn-small.btn-delete:hover { background: rgba(220,80,80,0.08); color: #c44; border-color: rgba(220,80,80,0.15); }
 
-        .btn-small:hover {
-            background: rgba(255, 255, 255, 1);
-            color: var(--text-primary);
-        }
-
-        .btn-small.btn-delete:hover {
-            background: rgba(255, 0, 0, 0.1);
-            color: #d32f2f;
-            border-color: rgba(255, 0, 0, 0.2);
-        }
-
-        /* 코스 입력 동적 폼 */
-        .course-inputs {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
+        /* Course input form */
+        .course-inputs { display: flex; flex-direction: column; gap: 0.8rem; }
         .course-input-row {
             display: grid;
             grid-template-columns: 80px 1fr 1fr auto;
             gap: 0.5rem;
             align-items: start;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.4);
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
+            padding: 0.8rem;
+            background: rgba(255,255,255,0.4);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
         }
-
-        .course-input-row input {
-            padding: 0.7rem;
-            font-size: 0.85rem;
-        }
-
+        .course-input-row input { padding: 0.6rem 0.8rem; font-size: 0.82rem; }
         .btn-remove-course {
-            width: 36px;
-            height: 36px;
-            min-width: 36px;
+            width: 32px; height: 32px; min-width: 32px;
             padding: 0;
             border-radius: 50%;
-            background: rgba(255, 0, 0, 0.08);
-            border: 1px solid rgba(255, 0, 0, 0.15);
-            color: #d32f2f;
-            font-size: 1.2rem;
+            background: rgba(220,80,80,0.06);
+            border: 1px solid rgba(220,80,80,0.1);
+            color: #c44;
+            font-size: 1.1rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex: none;
         }
-
-        .btn-remove-course:hover {
-            background: rgba(255, 0, 0, 0.15);
-        }
-
         .btn-add-course {
-            padding: 0.8rem;
-            background: rgba(255, 255, 255, 0.5);
-            border: 2px dashed var(--border-color);
-            border-radius: 10px;
-            color: var(--text-secondary);
+            padding: 0.7rem;
+            background: rgba(255,255,255,0.4);
+            border: 2px dashed rgba(0,0,0,0.08);
+            border-radius: var(--radius-sm);
+            color: var(--text-light);
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.82rem;
             transition: all 0.3s ease;
             width: 100%;
             text-align: center;
+            font-family: 'Noto Sans KR', sans-serif;
         }
+        .btn-add-course:hover { border-color: var(--pink-soft); color: var(--text-mid); background: rgba(255,255,255,0.7); }
 
-        .btn-add-course:hover {
-            border-color: var(--accent-lavender);
-            color: var(--text-primary);
-            background: rgba(255, 255, 255, 0.8);
-        }
+        /* Empty / loading states */
+        .loading { text-align: center; padding: 3rem; color: var(--text-light); font-size: 0.88rem; }
+        .empty-state { text-align: center; padding: 3rem 1.5rem; color: var(--text-light); }
+        .empty-state-icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
+        .empty-state-text { font-size: 0.92rem; margin-bottom: 0.3rem; }
+        .empty-state-sub { font-size: 0.8rem; opacity: 0.6; }
 
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: var(--text-secondary);
-        }
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-        .empty-state-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .empty-state-text {
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .empty-state-sub {
-            font-size: 0.85rem;
-            opacity: 0.7;
-        }
-
+        /* Responsive */
         @media (max-width: 768px) {
+            h1 { font-size: 2.2rem; }
+            .timezone-section { grid-template-columns: 1fr; gap: 1.2rem; padding: 1.5rem; }
+            .timezone-divider { height: 1px; width: 100%; background: linear-gradient(to right, transparent, var(--pink-soft), var(--lavender), transparent); }
+            .time { font-size: 2rem; }
+            .counter-section { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+            .counter-card { padding: 1.2rem 0.8rem; }
+            .counter-value { font-size: 1.6rem; }
+            .letters-grid { grid-template-columns: 1fr; }
+            .deco-left, .deco-right { width: 100px; height: 100px; opacity: 0.2; }
+            .deco-left { left: 5px; }
+            .deco-right { right: 5px; }
             .course-input-row {
                 grid-template-columns: 1fr 1fr;
-                gap: 0.5rem;
             }
-
-            .course-input-row input:first-child {
-                grid-column: 1;
-            }
-
-            .course-input-row .btn-remove-course {
-                grid-row: 1;
-                grid-column: 2;
-                justify-self: end;
-            }
-
-            .course-input-row input:nth-child(2) {
-                grid-column: 1 / -1;
-            }
-
-            .course-input-row input:nth-child(3) {
-                grid-column: 1 / -1;
-            }
-
-            .date-plan-header {
-                flex-direction: column;
-                gap: 0.5rem;
-                align-items: flex-start;
-            }
+            .course-input-row input:nth-child(2),
+            .course-input-row input:nth-child(3) { grid-column: 1 / -1; }
+            .course-input-row .btn-remove-course { grid-row: 1; grid-column: 2; justify-self: end; }
+            .date-plan-header { flex-direction: column; align-items: flex-start; }
+            .fab { bottom: 1.5rem; right: 1.5rem; width: 52px; height: 52px; font-size: 1.4rem; }
         }
 
-        /* 로딩 상태 */
-        .loading {
-            text-align: center;
-            padding: 3rem;
-            color: var(--text-secondary);
-            font-style: italic;
-        }
-
-        /* 애니메이션 */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes scaleIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        /* 반응형 */
-        @media (max-width: 768px) {
-            h1 { font-size: 2rem; }
-            
-            .timezone-section {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-            
-            .timezone-divider {
-                height: 1px;
-                width: 100%;
-                background: linear-gradient(to right, transparent, var(--border-color), transparent);
-            }
-            
-            .counter-section {
-                grid-template-columns: 1fr;
-            }
-            
-            .timeline::before {
-                left: 20px;
-            }
-            
-            .timeline-item {
-                flex-direction: column !important;
-            }
-            
-            .timeline-content {
-                max-width: 100%;
-                margin-left: 60px;
-                margin-right: 0;
-            }
-            
-            .timeline-dot {
-                left: 20px;
-            }
-            
-            .write-letter-btn {
-                bottom: 2rem;
-                right: 2rem;
-                width: 60px;
-                height: 60px;
-                font-size: 1.5rem;
-            }
-        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 3px; }
     </style>
 </head>
 <body>
+    <div class="deco-left"></div>
+    <div class="deco-right"></div>
+
     <div class="container">
         <header>
             <h1>Our Space</h1>
-            <p class="subtitle">Seoul ✦ London</p>
+            <p class="subtitle">Seoul &middot; London</p>
         </header>
 
-        <!-- 타임존 섹션 -->
-        <div class="timezone-section">
+        <div class="timezone-section glass">
             <div class="timezone">
                 <div class="city-name">Seoul</div>
                 <div class="time" id="seoul-time">--:--:--</div>
-                <div class="date" id="seoul-date">---- -- --</div>
+                <div class="date" id="seoul-date"></div>
             </div>
             <div class="timezone-divider"></div>
             <div class="timezone">
                 <div class="city-name">London</div>
                 <div class="time" id="london-time">--:--:--</div>
-                <div class="date" id="london-date">---- -- --</div>
+                <div class="date" id="london-date"></div>
             </div>
         </div>
 
-        <!-- D-Day 카운터 -->
         <div class="counter-section">
-            <div class="counter-card">
-                <div class="counter-label">함께한 시간</div>
-                <div class="counter-value" id="together-days">0일</div>
+            <div class="counter-card glass">
+                <div class="counter-label">Together</div>
+                <div class="counter-value" id="together-days">0</div>
             </div>
-            <div class="counter-card">
-                <div class="counter-label">다음 만남까지</div>
+            <div class="counter-card glass">
+                <div class="counter-label">Next Meet</div>
                 <div class="counter-value" id="next-meet">D-Day</div>
             </div>
         </div>
 
-        <!-- 네비게이션 -->
         <div class="nav-tabs">
-            <div class="nav-tab active" onclick="showSection('letters')">편지함</div>
-            <div class="nav-tab" onclick="showSection('dateplans')">데이트 일정</div>
-            <div class="nav-tab" onclick="showSection('memories')">추억</div>
+            <div class="nav-tab active" onclick="showSection('letters', this)">편지함</div>
+            <div class="nav-tab" onclick="showSection('dateplans', this)">데이트 일정</div>
+            <div class="nav-tab" onclick="showSection('memories', this)">추억</div>
         </div>
 
-        <!-- 편지함 섹션 -->
         <div id="letters-section" class="content-section active">
             <div class="filter-buttons">
-                <button class="filter-btn active" onclick="filterLetters('all')">전체</button>
-                <button class="filter-btn" onclick="filterLetters('윤서')">윤서에게 💌</button>
-                <button class="filter-btn" onclick="filterLetters('진혁')">진혁에게 💌</button>
+                <button class="filter-btn active" onclick="filterLetters('all', this)">전체</button>
+                <button class="filter-btn" onclick="filterLetters('윤서', this)">윤서</button>
+                <button class="filter-btn" onclick="filterLetters('진혁', this)">진혁</button>
             </div>
             <div class="letters-grid" id="letters-container">
                 <div class="loading">편지를 불러오는 중...</div>
             </div>
         </div>
 
-        <!-- 데이트 일정 섹션 -->
         <div id="dateplans-section" class="content-section">
             <div class="date-plans-list" id="dateplans-container">
                 <div class="loading">데이트 일정을 불러오는 중...</div>
             </div>
         </div>
 
-        <!-- 추억 섹션 -->
         <div id="memories-section" class="content-section">
             <div class="timeline" id="timeline-container">
                 <div class="loading">추억을 불러오는 중...</div>
@@ -1047,18 +750,17 @@
         </div>
     </div>
 
-    <!-- 플로팅 추가 버튼 -->
-    <button class="write-letter-btn" id="fab-btn" onclick="onFabClick()" title="추가">+</button>
+    <button type="button" class="fab" id="fab-btn" onclick="onFabClick()">+</button>
 
-    <!-- 편지 작성 모달 -->
+    <!-- Letter Modal -->
     <div id="letter-modal" class="modal">
         <div class="modal-content">
-            <h2 class="modal-title">새 편지 쓰기</h2>
+            <h2 class="modal-title">편지 쓰기</h2>
             <form id="letter-form">
                 <div class="form-group">
                     <label for="letter-from">보내는 사람</label>
                     <select id="letter-from" required>
-                        <option value="">선택하세요</option>
+                        <option value="">선택</option>
                         <option value="진혁">진혁</option>
                         <option value="윤서">윤서</option>
                     </select>
@@ -1066,17 +768,17 @@
                 <div class="form-group">
                     <label for="letter-to">받는 사람</label>
                     <select id="letter-to" required>
-                        <option value="">선택하세요</option>
+                        <option value="">선택</option>
                         <option value="윤서">윤서</option>
                         <option value="진혁">진혁</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="letter-content">편지 내용</label>
+                    <label for="letter-content">내용</label>
                     <textarea id="letter-content" placeholder="마음을 담아 써보세요..." required></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="letter-image">사진 첨부 (선택)</label>
+                    <label for="letter-image">사진 첨부</label>
                     <input type="file" id="letter-image" accept="image/*" onchange="previewImage(this, 'letter-image-preview')">
                     <div id="letter-image-preview" class="image-preview"></div>
                 </div>
@@ -1088,10 +790,10 @@
         </div>
     </div>
 
-    <!-- 추억 추가 모달 -->
+    <!-- Memory Modal -->
     <div id="memory-modal" class="modal">
         <div class="modal-content">
-            <h2 class="modal-title">새 추억 추가</h2>
+            <h2 class="modal-title">추억 기록</h2>
             <form id="memory-form">
                 <div class="form-group">
                     <label for="memory-date">날짜</label>
@@ -1103,10 +805,10 @@
                 </div>
                 <div class="form-group">
                     <label for="memory-content">내용</label>
-                    <textarea id="memory-content" placeholder="그날의 이야기를 적어보세요..." required></textarea>
+                    <textarea id="memory-content" placeholder="그날의 이야기..." required></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="memory-image">사진 첨부 (선택)</label>
+                    <label for="memory-image">사진 첨부</label>
                     <input type="file" id="memory-image" accept="image/*" onchange="previewImage(this, 'memory-image-preview')">
                     <div id="memory-image-preview" class="image-preview"></div>
                 </div>
@@ -1118,34 +820,34 @@
         </div>
     </div>
 
-    <!-- 데이트 일정 작성 모달 -->
+    <!-- Date Plan Modal -->
     <div id="dateplan-modal" class="modal">
         <div class="modal-content">
-            <h2 class="modal-title">데이트 일정 만들기</h2>
+            <h2 class="modal-title">데이트 계획</h2>
             <form id="dateplan-form">
                 <div class="form-group">
-                    <label for="dateplan-date">데이트 날짜</label>
+                    <label for="dateplan-date">날짜</label>
                     <input type="date" id="dateplan-date" required>
                 </div>
                 <div class="form-group">
-                    <label for="dateplan-title">데이트 제목</label>
+                    <label for="dateplan-title">제목</label>
                     <input type="text" id="dateplan-title" placeholder="예: 홍대 카페 투어" required>
                 </div>
                 <div class="form-group">
-                    <label>코스 (순서대로 추가)</label>
+                    <label>코스</label>
                     <div class="course-inputs" id="course-inputs">
                         <div class="course-input-row">
-                            <input type="time" class="course-time-input" placeholder="시간">
+                            <input type="time" class="course-time-input">
                             <input type="text" class="course-place-input" placeholder="장소" required>
-                            <input type="text" class="course-desc-input" placeholder="설명 (선택)">
-                            <button type="button" class="btn-remove-course" onclick="removeCourseRow(this)" title="삭제">&times;</button>
+                            <input type="text" class="course-desc-input" placeholder="설명">
+                            <button type="button" class="btn-remove-course" onclick="removeCourseRow(this)">&times;</button>
                         </div>
                     </div>
                     <button type="button" class="btn-add-course" onclick="addCourseRow()">+ 코스 추가</button>
                 </div>
                 <div class="form-group">
-                    <label for="dateplan-memo">메모 (선택)</label>
-                    <textarea id="dateplan-memo" placeholder="준비물, 예약 정보 등..." style="min-height: 100px;"></textarea>
+                    <label for="dateplan-memo">메모</label>
+                    <textarea id="dateplan-memo" placeholder="준비물, 예약 정보..." style="min-height: 80px;"></textarea>
                 </div>
                 <div class="btn-group">
                     <button type="button" class="btn-secondary" onclick="closeModal()">취소</button>
@@ -1155,7 +857,7 @@
         </div>
     </div>
 
-    <!-- 편지 상세보기 모달 -->
+    <!-- Letter Detail Modal -->
     <div id="letter-detail-modal" class="modal">
         <div class="modal-content">
             <h2 class="modal-title" id="letter-detail-title">편지</h2>
@@ -1165,7 +867,7 @@
             </div>
             <div class="letter-detail-content" id="letter-detail-text"></div>
             <div class="btn-group">
-                <button type="button" class="btn-primary" onclick="closeModal()" style="width: 100%;">닫기</button>
+                <button type="button" class="btn-primary" onclick="closeModal()" style="width:100%;">닫기</button>
             </div>
         </div>
     </div>

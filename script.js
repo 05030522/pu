@@ -16,7 +16,9 @@ const CONFIG = {
 
 // 전역 변수
 let allLetters = [];
+let allDatePlans = [];
 let currentFilter = 'all';
+let editingPlanIndex = -1;
 
 // ========================================
 // 시간대 시계
@@ -89,22 +91,49 @@ function updateCounters() {
 // 네비게이션
 // ========================================
 
+let currentSection = 'letters';
+
 function showSection(sectionName) {
+    currentSection = sectionName;
+
     // 모든 섹션 숨기기
     document.querySelectorAll('.content-section').forEach(section => {
         section.classList.remove('active');
     });
-    
+
     // 모든 탭 비활성화
     document.querySelectorAll('.nav-tab').forEach(tab => {
         tab.classList.remove('active');
     });
-    
+
     // 선택한 섹션 표시
     document.getElementById(`${sectionName}-section`).classList.add('active');
-    
+
     // 선택한 탭 활성화
     event.target.classList.add('active');
+
+    // FAB 버튼 아이콘 변경
+    const fab = document.getElementById('fab-btn');
+    if (sectionName === 'letters') {
+        fab.textContent = '✎';
+        fab.title = '편지 쓰기';
+    } else if (sectionName === 'dateplans') {
+        fab.textContent = '+';
+        fab.title = '데이트 일정 추가';
+    } else {
+        fab.textContent = '+';
+        fab.title = '추억 추가';
+    }
+}
+
+function onFabClick() {
+    if (currentSection === 'letters') {
+        openModal('letter');
+    } else if (currentSection === 'dateplans') {
+        openModal('dateplan');
+    } else if (currentSection === 'memories') {
+        openModal('memory');
+    }
 }
 
 // ========================================
@@ -116,6 +145,9 @@ function openModal(type) {
         document.getElementById('letter-modal').classList.add('active');
     } else if (type === 'memory') {
         document.getElementById('memory-modal').classList.add('active');
+    } else if (type === 'dateplan') {
+        editingPlanIndex = -1;
+        document.getElementById('dateplan-modal').classList.add('active');
     }
 }
 
@@ -123,10 +155,23 @@ function closeModal() {
     document.querySelectorAll('.modal').forEach(modal => {
         modal.classList.remove('active');
     });
-    
+
     // 폼 초기화
     document.getElementById('letter-form').reset();
     document.getElementById('memory-form').reset();
+    document.getElementById('dateplan-form').reset();
+    editingPlanIndex = -1;
+
+    // 코스 입력 초기화 (1개만 남기기)
+    const courseInputs = document.getElementById('course-inputs');
+    courseInputs.innerHTML = `
+        <div class="course-input-row">
+            <input type="time" class="course-time-input" placeholder="시간">
+            <input type="text" class="course-place-input" placeholder="장소" required>
+            <input type="text" class="course-desc-input" placeholder="설명 (선택)">
+            <button type="button" class="btn-remove-course" onclick="removeCourseRow(this)" title="삭제">&times;</button>
+        </div>
+    `;
 }
 
 // 모달 외부 클릭시 닫기
@@ -310,6 +355,210 @@ async function saveMemory(memoryData) {
 }
 
 // ========================================
+// 데이트 일정 관련 함수
+// ========================================
+
+// 코스 행 추가
+function addCourseRow() {
+    const container = document.getElementById('course-inputs');
+    const row = document.createElement('div');
+    row.className = 'course-input-row';
+    row.innerHTML = `
+        <input type="time" class="course-time-input" placeholder="시간">
+        <input type="text" class="course-place-input" placeholder="장소" required>
+        <input type="text" class="course-desc-input" placeholder="설명 (선택)">
+        <button type="button" class="btn-remove-course" onclick="removeCourseRow(this)" title="삭제">&times;</button>
+    `;
+    container.appendChild(row);
+    row.querySelector('.course-place-input').focus();
+}
+
+// 코스 행 삭제
+function removeCourseRow(btn) {
+    const container = document.getElementById('course-inputs');
+    if (container.children.length > 1) {
+        btn.closest('.course-input-row').remove();
+    }
+}
+
+// 데이트 일정 불러오기
+async function loadDatePlans() {
+    try {
+        const response = await fetch(`${CONFIG.GOOGLE_SCRIPT_URL}?action=getDatePlans`);
+        const plans = await response.json();
+        allDatePlans = plans;
+        displayDatePlans();
+    } catch (error) {
+        console.error('데이트 일정 불러오기 실패:', error);
+        document.getElementById('dateplans-container').innerHTML =
+            '<div class="loading">데이트 일정을 불러올 수 없습니다.</div>';
+    }
+}
+
+// 데이트 일정 표시
+function displayDatePlans() {
+    const container = document.getElementById('dateplans-container');
+
+    if (allDatePlans.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">📅</div>
+                <div class="empty-state-text">아직 데이트 일정이 없어요</div>
+                <div class="empty-state-sub">아래 + 버튼을 눌러 첫 데이트 코스를 만들어보세요!</div>
+            </div>
+        `;
+        return;
+    }
+
+    // 날짜순 정렬 (가까운 날짜 먼저)
+    const sorted = [...allDatePlans].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    container.innerHTML = sorted.map((plan, index) => {
+        const planDate = new Date(plan.date);
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);
+        const diff = Math.floor((planDate - now) / (1000 * 60 * 60 * 24));
+        let ddayText = '';
+        if (diff > 0) ddayText = `D-${diff}`;
+        else if (diff === 0) ddayText = 'D-Day!';
+        else ddayText = `D+${Math.abs(diff)}`;
+
+        const courses = plan.courses || [];
+        const courseHTML = courses.map(c => `
+            <div class="course-item">
+                <div class="course-time">${c.time || ''}</div>
+                <div class="course-dot"></div>
+                <div class="course-detail">
+                    <div class="course-place">${escapeHTML(c.place)}</div>
+                    ${c.desc ? `<div class="course-desc">${escapeHTML(c.desc)}</div>` : ''}
+                </div>
+            </div>
+        `).join('');
+
+        const memoHTML = plan.memo ? `<div class="course-memo">${escapeHTML(plan.memo)}</div>` : '';
+
+        return `
+            <div class="date-plan-card" style="animation: fadeInUp 0.6s ease-out ${index * 0.1}s both;">
+                <div class="date-plan-header">
+                    <div class="date-plan-title">${escapeHTML(plan.title)}</div>
+                    <div>
+                        <span class="date-plan-date">${formatDate(plan.date)}</span>
+                        <span class="date-plan-dday">${ddayText}</span>
+                    </div>
+                </div>
+                <div class="course-list">
+                    ${courseHTML}
+                </div>
+                ${memoHTML ? `<div style="padding: 0 2rem 1rem;">${memoHTML}</div>` : ''}
+                <div class="date-plan-actions">
+                    <button class="btn-small" onclick="editDatePlan(${index})">수정</button>
+                    <button class="btn-small btn-delete" onclick="deleteDatePlan(${index})">삭제</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// 데이트 일정 저장
+async function saveDatePlan(planData) {
+    try {
+        await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'addDatePlan',
+                data: planData
+            })
+        });
+        alert('데이트 일정이 저장되었습니다! 📅');
+        closeModal();
+        setTimeout(loadDatePlans, 1000);
+    } catch (error) {
+        console.error('데이트 일정 저장 실패:', error);
+        alert('저장에 실패했습니다. 다시 시도해주세요.');
+    }
+}
+
+// 데이트 일정 수정
+async function updateDatePlan(index, planData) {
+    try {
+        await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'updateDatePlan',
+                index: index,
+                data: planData
+            })
+        });
+        alert('데이트 일정이 수정되었습니다!');
+        closeModal();
+        setTimeout(loadDatePlans, 1000);
+    } catch (error) {
+        console.error('데이트 일정 수정 실패:', error);
+        alert('수정에 실패했습니다. 다시 시도해주세요.');
+    }
+}
+
+// 데이트 일정 삭제
+async function deleteDatePlan(index) {
+    if (!confirm('이 데이트 일정을 삭제할까요?')) return;
+    try {
+        await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'deleteDatePlan',
+                index: index
+            })
+        });
+        alert('삭제되었습니다.');
+        setTimeout(loadDatePlans, 1000);
+    } catch (error) {
+        console.error('삭제 실패:', error);
+        alert('삭제에 실패했습니다.');
+    }
+}
+
+// 데이트 일정 수정 모달 열기
+function editDatePlan(index) {
+    const plan = allDatePlans[index];
+    editingPlanIndex = index;
+
+    document.getElementById('dateplan-date').value = plan.date;
+    document.getElementById('dateplan-title').value = plan.title;
+    document.getElementById('dateplan-memo').value = plan.memo || '';
+
+    // 코스 입력 채우기
+    const container = document.getElementById('course-inputs');
+    const courses = plan.courses || [];
+    if (courses.length === 0) {
+        container.innerHTML = `
+            <div class="course-input-row">
+                <input type="time" class="course-time-input" placeholder="시간">
+                <input type="text" class="course-place-input" placeholder="장소" required>
+                <input type="text" class="course-desc-input" placeholder="설명 (선택)">
+                <button type="button" class="btn-remove-course" onclick="removeCourseRow(this)" title="삭제">&times;</button>
+            </div>
+        `;
+    } else {
+        container.innerHTML = courses.map(c => `
+            <div class="course-input-row">
+                <input type="time" class="course-time-input" value="${c.time || ''}">
+                <input type="text" class="course-place-input" placeholder="장소" value="${escapeAttr(c.place)}" required>
+                <input type="text" class="course-desc-input" placeholder="설명 (선택)" value="${escapeAttr(c.desc || '')}">
+                <button type="button" class="btn-remove-course" onclick="removeCourseRow(this)" title="삭제">&times;</button>
+            </div>
+        `).join('');
+    }
+
+    document.getElementById('dateplan-modal').classList.add('active');
+}
+
+// ========================================
 // 폼 제출 처리
 // ========================================
 
@@ -416,6 +665,50 @@ document.getElementById('memory-form').addEventListener('submit', async (e) => {
     }
 });
 
+// 데이트 일정 폼 제출
+document.getElementById('dateplan-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = '저장 중...';
+
+    try {
+        // 코스 데이터 수집
+        const rows = document.querySelectorAll('#course-inputs .course-input-row');
+        const courses = [];
+        rows.forEach(row => {
+            const place = row.querySelector('.course-place-input').value.trim();
+            if (place) {
+                courses.push({
+                    time: row.querySelector('.course-time-input').value || '',
+                    place: place,
+                    desc: row.querySelector('.course-desc-input').value.trim() || ''
+                });
+            }
+        });
+
+        const planData = {
+            date: document.getElementById('dateplan-date').value,
+            title: document.getElementById('dateplan-title').value,
+            courses: courses,
+            memo: document.getElementById('dateplan-memo').value.trim()
+        };
+
+        if (editingPlanIndex >= 0) {
+            await updateDatePlan(editingPlanIndex, planData);
+        } else {
+            await saveDatePlan(planData);
+        }
+    } catch (error) {
+        console.error('데이트 일정 저장 실패:', error);
+        alert('저장에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '저장';
+    }
+});
+
 // ========================================
 // 유틸리티 함수
 // ========================================
@@ -427,6 +720,16 @@ function formatDate(dateString) {
         month: 'long',
         day: 'numeric'
     });
+}
+
+function escapeHTML(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+function escapeAttr(str) {
+    return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 // ========================================
@@ -445,6 +748,7 @@ function init() {
     // 데이터 로드
     loadLetters();
     loadMemories();
+    loadDatePlans();
     
     // 추억 추가 버튼 이벤트 (옵션: 더블클릭으로 추억 추가 모달 열기)
     document.getElementById('memories-section').addEventListener('dblclick', () => {
